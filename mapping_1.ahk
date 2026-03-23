@@ -1,0 +1,268 @@
+﻿
+; Author: Dario Colombotto
+; US Layout
+
+#Requires AutoHotkey v2.0
+
+; ======== Gui per Popup ================================
+
+global modeGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
+modeGui.SetFont("s15", "Segoe UI")
+
+global modeText := modeGui.AddText("cBlack w120 Center", " INSERT ")
+
+ShowPopup(text)
+{
+  global modeGui, modeText
+
+  ; padding
+  modeText.Value := " " text " "
+
+  ; colori dinamici
+  switch text
+  {
+    case "NORMAL":
+      modeGui.BackColor := "FF9700"
+    case "INSERT":
+      modeGui.BackColor := "A4E400"
+    case "NOP":
+      modeGui.BackColor := "FC1A70"
+    default:
+      modeGui.BackColor := "White"
+  }
+
+  ; calcolo dimensione
+  modeGui.Show("AutoSize NoActivate")
+
+  WinGetPos(, , &w, &h, modeGui.Hwnd)
+
+  x_margin := 10
+  y_margin := 70
+  x := x_margin
+  y := A_ScreenHeight - h - y_margin
+
+  modeGui.Show("x" x " y" y " NoActivate")
+}
+
+HidePopup()
+{
+  global modeGui
+  modeGui.Hide()
+}
+
+Popup(text)
+{
+  ShowPopup(text)
+  SetTimer(HidePopup, -700)
+}
+
+; =======================================================
+
+global vimMode := false   ; insert all'avvio
+
+SetVimMode(mode)
+{
+  global vimMode
+  vimMode := mode
+  Popup(vimMode ? "NORMAL" : "INSERT")
+}
+
+BlockKeys()
+{
+  global vimMode
+
+  HotIf((*) => vimMode)
+    for key in StrSplit(
+      "qwertyuiop"
+      "asdfghjkl"
+      "zxcvbnm"
+      )
+      {
+        Hotkey(key, (*) => (Popup("NOP"), 0))
+        Hotkey("+" key, (*) => (Popup("NOP"), 0))
+      }
+    for key in StrSplit(
+      "`1234567890-="
+      "[]\"
+      ";'"
+      ",./"
+      ; shift
+      "~!@#$%^&*()_+"
+      "{}|"
+      ":"
+      "<>?"
+      )
+      {
+        Hotkey(key, (*) => (Popup("NOP"), 0))
+      }
+    for key in [
+      "Space",
+      "Enter",
+      "Tab",
+      "Backspace",
+      "Del",
+      ]
+      {
+        Hotkey(key, (*) => (Popup("NOP"), 0))
+      }
+
+  HotIf()
+}
+
+BlockKeys()
+
+#HotIf vimMode
+
+  ; Per qualche motivo oscuro mappando con Send
+  ; sovrascrive la logica dei BlockKeys,
+  ; invece mappando normalmente (es. h::Left)
+  ; non la sovrascrive e va implementata la whitelist.
+  ; con Send invece ci evitiamo la whitelist.
+  ; Send però richiede di mappare esplicitamente  Ctrl, Shift, etc
+
+  h::Send("{Left}")
+  j::Send("{Down}")
+  k::Send("{Up}")
+  l::Send("{Right}")
+  +h::Send("+{Left}")
+  +j::Send("+{Down}")
+  +k::Send("+{Up}")
+  +l::Send("+{Right}")
+  ^h::Send("^{Left}")
+  ^j::Send("^{Down}")
+  ^k::Send("^{Up}")
+  ^l::Send("^{Right}")
+  ^+h::Send("^+{Left}")
+  ^+j::Send("^+{Down}")
+  ^+k::Send("^+{Up}")
+  ^+l::Send("^+{Right}")
+  ; #h::Send("#{Left}")
+  ; #j::Send("#{Down}")
+  ; #k::Send("#{Up}")
+  ; #l::Send("#{Right}")
+
+  w::Send("^{Right}")
+  b::Send("^{Left}")
+
+  ; queste 2 non funzionano con CapsLock, solo con Ctrl è corretto così.
+  ; di fatto non si può mappare C-qualcosa su qualcosa non C-
+  ^u::Send("{PgUp}")
+  ^d::Send("{PgDn}")
+
+  ^+u::Send("^{PgUp}")
+  ^+d::Send("^{PgDn}")
+
+  o::Send("{Home}")
+  p::Send("{End}")
+  +o::Send("+{Home}")
+  +p::Send("+{End}")
+  ^o::Send("^{Home}")
+  ^p::Send("^{End}")
+
+  0::Send("{Home}")
+  $::Send("{End}")
+
+  +v::Send("{Home}+{End}")
+  +a::
+  {
+    Send("{End}")
+    SetVimMode(false)
+  }
+
+  Enter::Send("{Enter}")
+  Backspace::Send("{Backspace}")
+
+  ; disattiva vimMode
+  i::SetVimMode(false)
+
+  ^CapsLock::
+  {
+    Popup("NORMAL")
+  }
+
+#HotIf
+
+; questa logica mappa CapsLock su Ctrl
+; e con C-CapsLock fa toggle su vimMode
+global capsAsCtrl := false
+*CapsLock::
+{
+  global capsAsCtrl
+  if GetKeyState("Ctrl", "P")
+    return
+  capsAsCtrl := true
+  Send("{Blind}{Ctrl down}")
+}
+*CapsLock Up::
+{
+  global capsAsCtrl
+  if capsAsCtrl
+  {
+    Send("{Blind}{Ctrl up}")
+    capsAsCtrl := false
+  }
+}
+^CapsLock Up::
+{
+  ; SetVimMode(!vimMode)
+  ; attiva vimMode
+  if !vimMode
+    SetVimMode(true)
+}
+
+; backtick per Esc
+`::Esc
+^`::SendText("``")
++`::SendText("~")
+
+; --- layer caratteri con RAlt -------------------------------
+
+; CapsLock
+RAlt & CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
+
+; Function-1, 2, ...
+for i, key in ["1","2","3","4","5","6","7","8","9","0","-","="]
+{
+  idx := i
+  Hotkey("RAlt & " key, MakeFKeyFunc(idx))
+}
+MakeFKeyFunc(idx)
+{
+  return (*) => (
+    GetKeyState("Shift", "P")
+      ? Send("+{F" idx "}")
+      : Send("{F" idx "}") )
+}
+
+; Mappa configurabile per caratteri specali
+global cycleState := Map()
+for key, chars in Map(
+  "a", ["à",],
+  "e", ["è","é","€",],
+  "i", ["ì",],
+  "o", ["ò",],
+  "u", ["ù",],
+)
+{
+  Hotkey("RAlt & " key, MakeCycleFunc(key, chars))
+}
+MakeCycleFunc(key, chars)
+{
+  return (*) => CycleKey(key, chars)
+}
+CycleKey(key, chars)
+{
+  global cycleState
+  if !cycleState.Has(key)
+    cycleState[key] := 0
+  else
+    Send("{Backspace}")
+  idx := Mod(cycleState[key], chars.Length) + 1
+  cycleState[key] := idx
+  SendText(chars[idx])
+}
+~RAlt Up::
+{
+  global cycleState
+  cycleState.Clear()
+}
