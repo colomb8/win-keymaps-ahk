@@ -1,61 +1,69 @@
 # AHK Vim Mode + CapsLock Mod
 
-Script AutoHotkey v2 che aggiunge una modalità di navigazione in stile Vim e alcune rimappature utili per tastiere 60%. Progettato per ambiente Windows ma facilmente adattabile ad altri sistemi.
+AutoHotkey v2 script that adds a Vim-style navigation mode and some useful remappings for 60% keyboards. Designed for Windows environments but easily adaptable to other systems.
 
-## Funzionalità
+## Features
 
-- Modalità modale per gestire tastiere 60% e/o usare alcune vim motion senza lasciare la home row; indicazione visiva della modalità tramite popup non invasivo
-- Inserimento rapido di lettere accentate tramite Right Alt come layer
-Per ergonomia:
-- CapsLock mappato su Ctrl
-- Backtick mappato su Esc
+* Modal navigation mode to manage 60% keyboards and/or use some Vim motions without leaving the home row; visual mode indicator via a non-intrusive popup
+* Quick insertion of accented characters using Right Alt as a layer
 
-## Modalità
+For ergonomics:
+
+* CapsLock mapped to Ctrl
+* Backtick mapped to Esc
+
+## Modes
 
 ### INSERT (default)
-- Tastiera standard
-- `Ctrl + CapsLock` attiva la modalità NORMAL (aka vimMode)
+
+* Standard keyboard behavior
+* `Ctrl + CapsLock` activates NORMAL mode (aka vimMode)
 
 ### NORMAL
-- Navigazione:
-  - `h` / `j` / `k` / `l` → frecce
-  - `w` / `b` → movimento tra parole
-  - `o` / `p` → inizio / fine riga
-  - altri binding configurabili nello script
-- in NORMAL, si torna in INSERT con `i`, `a`
-- per la lista completa di mapping, consultare il blocco
+
+* Navigation:
+
+  * `h` / `j` / `k` / `l` → arrow keys
+  * `w` / `b` → word navigation
+  * `o` / `p` → beginning / end of line
+  * other bindings configurable in the script
+* In NORMAL mode, return to INSERT with `i`, `a`
+* For the full list of mappings, check the block:
+
 ```autohotkey
 #HotIf vimMode
 ...
 ```
-- I tasti non mappati vengono bloccati e l'utente è avvisato tramite popup non invasivo
 
-## Immissione caratteri speciali
+* Unmapped keys are blocked and the user is notified via a non-intrusive popup
 
-L'idea è di avere `Righ Alt` come tasto standard per accedere ad altri caratteri (layer). Un ciclatore permette di inserire rapidamente alcuni caratteri accentati e simboli. Consultare la mappa per visionare la lista completa e/o aggiungere caratteri personalizzati.
+## Special Character Input
 
-Esempi:
-- `Right Alt + a` → `à`
-- `Right Alt + e` → ciclo tra `è`, `é`, `€`
-- `Right Alt + i` → `ì`
-- `Right Alt + o` → `ò`
-- `Right Alt + u` → `ù`
+The idea is to use `Right Alt` as the standard key to access additional characters (layer). A cycling mechanism allows quick insertion of accented characters and symbols. Check the mapping to view the full list and/or add custom characters.
 
-## Requisiti
+Examples:
 
-- Windows
-- AutoHotkey v2.0
+* `Right Alt + a` → `à`
+* `Right Alt + e` → cycles through `è`, `é`, `€`
+* `Right Alt + i` → `ì`
+* `Right Alt + o` → `ò`
+* `Right Alt + u` → `ù`
 
-## Avvio automatico (opzionale)
+## Requirements
 
-Per avviare lo script automaticamente all'accesso:
+* Windows
+* AutoHotkey v2.0
 
-1. Premi `Win + R`
-2. Digita `shell:startup`
-3. Inserisci lo script (o un collegamento) nella cartella
+## Auto-start (optional)
 
-## Note
+To start the script automatically on login:
 
-- CapsLock non attiva più il maiuscolo. Rimappato su `Right Alt + CapsLock`
-- Alcune scorciatoie di sistema di Windows non sono intercettabili tramite AutoHotkey (e.g. WinL)
-- I mapping sono pensati per essere modificati facilmente direttamente nello script
+1. Press `Win + R`
+2. Type `shell:startup`
+3. Place the script (or a shortcut) in the folder
+
+## Notes
+
+* CapsLock no longer toggles uppercase. Remapped to `Right Alt + CapsLock`
+* Some Windows system shortcuts cannot be intercepted by AutoHotkey (e.g. Win+L)
+* Mappings are designed to be easily modified directly in the script
