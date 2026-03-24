@@ -155,19 +155,21 @@ BlockKeys()
   ; bug-feature:
   ;   con Ctrl: manda come impostato
   ;   con CapsLock: manda Ctrl + come impostato
-  ^u::Send("{PgUp}")
-  ^d::Send("{PgDn}")
+  8::Send("{PgUp}")
+  9::Send("{PgDn}")
 
-  ^+u::Send("^{PgUp}")
-  ^+d::Send("^{PgDn}")
+  ^8::Send("^{PgUp}")
+  ^9::Send("^{PgDn}")
 
   ; inizio e fine riga
-  o::Send("{Home}")
-  p::Send("{End}")
-  +o::Send("+{Home}")
-  +p::Send("+{End}")
-  ^o::Send("^{Home}")
-  ^p::Send("^{End}")
+  y::Send("{Home}")
+  u::Send("{End}")
+  +y::Send("+{Home}")
+  +u::Send("+{End}")
+  ^y::Send("^{Home}")
+  ^u::Send("^{End}")
+  ^+y::Send("^+{Home}")
+  ^+u::Send("^+{End}")
 
   0::Send("{Home}")
   $::Send("{End}")
@@ -191,6 +193,18 @@ BlockKeys()
   }
 
   ; Disattiva vimMode (entra in insert mode)
+
+  o::
+  {
+    Send("{End}{Enter}")
+    SetVimMode(false)
+  }
+  +o::
+  {
+    Send("{Home}{Enter}{Up}")
+    SetVimMode(false)
+  }
+
   i::SetVimMode(false)
   c::SetVimMode(false)
   a::
@@ -205,17 +219,17 @@ BlockKeys()
 
 #HotIf
 
-#HotIf !vimMode
-  ; mapping solo in insert
-  ; WARNING: SPERIMENTALE
-  ;
-  ; non si può mappare C-qualcosa su qualcosa non C-
-  ; bug-feature:
-  ;   con Ctrl: manda come impostato
-  ;   con CapsLock: manda Ctrl + come impostato
-  ^h::Send("{Backspace}")
-  ^l::Send("{Del}")
-#HotIf
+; #HotIf !vimMode
+;   ; mapping solo in insert
+;   ; WARNING: SPERIMENTALE
+;   ;
+;   ; non si può mappare C-qualcosa su qualcosa non C-
+;   ; bug-feature:
+;   ;   con Ctrl: manda come impostato
+;   ;   con CapsLock: manda Ctrl + come impostato
+;   ^h::Send("{Backspace}")
+;   ^l::Send("{Del}")
+; #HotIf
 
 ; questa logica mappa CapsLock su Ctrl
 ; e con C-CapsLock fa toggle su vimMode
@@ -253,7 +267,7 @@ global capsAsCtrl := false
 +`::SendText("~")
 
 ; RAlt per combinazioni particolari Windows
-RAlt & c::Send("!{F4}")
+RAlt & q::Send("!{F4}")
 
 ; RAlt per CapsLock
 RAlt & CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))

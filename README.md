@@ -25,9 +25,9 @@ For ergonomics:
 
   * `h` / `j` / `k` / `l` → arrow keys
   * `w` / `b` → word navigation
-  * `o` / `p` → beginning / end of line
+  * `y` / `u` → beginning / end of line
   * other bindings configurable in the script
-* In NORMAL mode, return to INSERT with `i`, `a`
+* In NORMAL mode, return to INSERT with `i`, `a`, `c`, `o`, `O`
 * For the full list of mappings, check the block:
 
 ```autohotkey
