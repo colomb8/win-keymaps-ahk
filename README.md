@@ -1,22 +1,20 @@
 # AHK Vim Mode + CapsLock Mod
 
-Script AutoHotkey v2 che aggiunge una modalità di navigazione in stile Vim e alcune rimappature utili per l'uso quotidiano su Windows.
+Script AutoHotkey v2 che aggiunge una modalità di navigazione in stile Vim e alcune rimappature utili per tastiere 60%. Progettato per ambiente Windows ma facilmente adattabile ad altri sistemi.
 
 ## Funzionalità
 
-- CapsLock si comporta come Ctrl
-- Ctrl + CapsLock attiva la modalità NORMAL
-- Modalità INSERT e NORMAL con indicazione visiva
-- Navigazione con tasti stile Vim (`h`, `j`, `k`, `l`, `w`, `b`, ecc.)
-- Blocco dei tasti non consentiti in modalità NORMAL
-- Inserimento rapido di lettere accentate tramite Right Alt
-- Mapping di tasti funzione e altre scorciatoie personalizzate
+- Modalità modale per gestire tastiere 60% e/o usare alcune vim motion senza lasciare la home row; indicazione visiva della modalità tramite popup non invasivo
+- Inserimento rapido di lettere accentate tramite Right Alt come layer
+Per ergonomia:
+- CapsLock mappato su Ctrl
+- Backtick mappato su Esc
 
 ## Modalità
 
 ### INSERT (default)
 - Tastiera standard
-- CapsLock = Ctrl
+- `Ctrl + CapsLock` attiva la modalità NORMAL (aka vimMode)
 
 ### NORMAL
 - Navigazione:
@@ -24,11 +22,17 @@ Script AutoHotkey v2 che aggiunge una modalità di navigazione in stile Vim e al
   - `w` / `b` → movimento tra parole
   - `o` / `p` → inizio / fine riga
   - altri binding configurabili nello script
-- I tasti non mappati vengono bloccati
+- in NORMAL, si torna in INSERT con `i`, `a`
+- per la lista completa di mapping, consultare il blocco
+```autohotkey
+#HotIf vimMode
+...
+```
+- I tasti non mappati vengono bloccati e l'utente è avvisato tramite popup non invasivo
 
-## Lettere accentate
+## Immissione caratteri speciali
 
-Lo script include un layer con `Right Alt` per inserire rapidamente alcuni caratteri accentati e simboli.
+L'idea è di avere `Righ Alt` come tasto standard per accedere ad altri caratteri (layer). Un ciclatore permette di inserire rapidamente alcuni caratteri accentati e simboli. Consultare la mappa per visionare la lista completa e/o aggiungere caratteri personalizzati.
 
 Esempi:
 - `Right Alt + a` → `à`
@@ -37,14 +41,9 @@ Esempi:
 - `Right Alt + o` → `ò`
 - `Right Alt + u` → `ù`
 
-## Controlli principali
-
-- `CapsLock` → Ctrl
-- `Ctrl + CapsLock` → entra in NORMAL mode
-- `i` → torna in INSERT mode
-
 ## Requisiti
 
+- Windows
 - AutoHotkey v2.0
 
 ## Avvio automatico (opzionale)
@@ -57,8 +56,6 @@ Per avviare lo script automaticamente all'accesso:
 
 ## Note
 
-- CapsLock non attiva più il maiuscolo
-- Alcuni comportamenti possono variare tra applicazioni diverse
-- Alcune scorciatoie di sistema di Windows non sono intercettabili tramite AutoHotkey
+- CapsLock non attiva più il maiuscolo. Rimappato su `Right Alt + CapsLock`
+- Alcune scorciatoie di sistema di Windows non sono intercettabili tramite AutoHotkey (e.g. WinL)
 - I mapping sono pensati per essere modificati facilmente direttamente nello script
-

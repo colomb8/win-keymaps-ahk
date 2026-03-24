@@ -120,6 +120,7 @@ BlockKeys()
   ; con Send invece ci evitiamo la whitelist.
   ; Send però richiede di mappare esplicitamente  Ctrl, Shift, etc
 
+  ; frecce
   h::Send("{Left}")
   j::Send("{Down}")
   k::Send("{Up}")
@@ -141,17 +142,20 @@ BlockKeys()
   #k::Send("#{Up}")
   ; #l::Send("#{Right}") ; conflitto con funzionalità Win
 
+  ; jumps
   w::Send("^{Right}")
   b::Send("^{Left}")
 
   ; queste 2 non funzionano con CapsLock, solo con Ctrl è corretto così.
-  ; di fatto non si può mappare C-qualcosa su qualcosa non C-
+  ; per come è implementata la logica
+  ; non si può mappare C-qualcosa su qualcosa non C-
   ^u::Send("{PgUp}")
   ^d::Send("{PgDn}")
 
   ^+u::Send("^{PgUp}")
   ^+d::Send("^{PgDn}")
 
+  ; inizio e fine riga
   o::Send("{Home}")
   p::Send("{End}")
   +o::Send("+{Home}")
@@ -162,11 +166,18 @@ BlockKeys()
   0::Send("{Home}")
   $::Send("{End}")
 
+  ; seleziona riga
   +v::Send("{Home}+{End}")
 
+  ; x e d come Delete
+  d::Send("{Del}")
+  x::Send("{Del}")
+
+  ; Per comodità, CR e BS li facciamo passare anche in Normal
   Enter::Send("{Enter}")
   Backspace::Send("{Backspace}")
 
+  ; Solo popup perchè siamo già in Normal
   ^CapsLock::
   {
     Popup("NORMAL")
@@ -242,6 +253,9 @@ for key, chars in Map(
   "i", ["ì",],
   "o", ["ò",],
   "u", ["ù",],
+  ; ridondante ma comodo
+  "'", ["``",],
+  "t", ["~",], ; t per tilde
 )
 {
   Hotkey("RAlt & " key, MakeCycleFunc(key, chars))
