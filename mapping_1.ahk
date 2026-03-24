@@ -136,10 +136,10 @@ BlockKeys()
   ^+j::Send("^+{Down}")
   ^+k::Send("^+{Up}")
   ^+l::Send("^+{Right}")
-  ; #h::Send("#{Left}")
-  ; #j::Send("#{Down}")
-  ; #k::Send("#{Up}")
-  ; #l::Send("#{Right}")
+  ; #h::Send("#{Left}") ; conflitto con funzionalità Win
+  #j::Send("#{Down}")
+  #k::Send("#{Up}")
+  ; #l::Send("#{Right}") ; conflitto con funzionalità Win
 
   w::Send("^{Right}")
   b::Send("^{Left}")
@@ -163,21 +163,21 @@ BlockKeys()
   $::Send("{End}")
 
   +v::Send("{Home}+{End}")
-  +a::
-  {
-    Send("{End}")
-    SetVimMode(false)
-  }
 
   Enter::Send("{Enter}")
   Backspace::Send("{Backspace}")
 
-  ; disattiva vimMode
-  i::SetVimMode(false)
-
   ^CapsLock::
   {
     Popup("NORMAL")
+  }
+
+  ; Disattiva vimMode (entra in insert mode)
+  i::SetVimMode(false)
+  +a::
+  {
+    Send("{End}")
+      SetVimMode(false)
   }
 
 #HotIf
