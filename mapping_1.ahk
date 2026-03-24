@@ -145,10 +145,16 @@ BlockKeys()
   ; jumps
   w::Send("^{Right}")
   b::Send("^{Left}")
+  +w::Send("^+{Right}")
+  +b::Send("^+{Left}")
 
   ; queste 2 non funzionano con CapsLock, solo con Ctrl è corretto così.
   ; per come è implementata la logica
+  ;
   ; non si può mappare C-qualcosa su qualcosa non C-
+  ; bug-feature:
+  ;   con Ctrl: manda come impostato
+  ;   con CapsLock: manda Ctrl + come impostato
   ^u::Send("{PgUp}")
   ^d::Send("{PgDn}")
 
@@ -169,13 +175,14 @@ BlockKeys()
   ; seleziona riga
   +v::Send("{Home}+{End}")
 
-  ; x e d come Delete
+  ; x e d come Del
   d::Send("{Del}")
   x::Send("{Del}")
 
-  ; Per comodità, CR e BS li facciamo passare anche in Normal
+  ; Per comodità, questi li facciamo passare anche in Normal
   Enter::Send("{Enter}")
   Backspace::Send("{Backspace}")
+  Tab::Send("{Tab}") ; utile per muoversi nelle interfacce
 
   ; Solo popup perchè siamo già in Normal
   ^CapsLock::
@@ -185,12 +192,29 @@ BlockKeys()
 
   ; Disattiva vimMode (entra in insert mode)
   i::SetVimMode(false)
+  c::SetVimMode(false)
+  a::
+  {
+    SetVimMode(false)
+  }
   +a::
   {
     Send("{End}")
       SetVimMode(false)
   }
 
+#HotIf
+
+#HotIf !vimMode
+  ; mapping solo in insert
+  ; WARNING: SPERIMENTALE
+  ;
+  ; non si può mappare C-qualcosa su qualcosa non C-
+  ; bug-feature:
+  ;   con Ctrl: manda come impostato
+  ;   con CapsLock: manda Ctrl + come impostato
+  ^h::Send("{Backspace}")
+  ^l::Send("{Del}")
 #HotIf
 
 ; questa logica mappa CapsLock su Ctrl
@@ -221,38 +245,45 @@ global capsAsCtrl := false
     SetVimMode(true)
 }
 
+; altri mapping -------------------------------
+
 ; backtick per Esc
 `::Esc
 ^`::SendText("``")
 +`::SendText("~")
 
-; --- layer caratteri con RAlt -------------------------------
+; RAlt per combinazioni particolari Windows
+RAlt & c::Send("!{F4}")
 
-; CapsLock
+; RAlt per CapsLock
 RAlt & CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
 
-; Function-1, 2, ...
+; RAlt per Function-1, 2, ...
 for i, key in ["1","2","3","4","5","6","7","8","9","0","-","="]
 {
-  idx := i
-  Hotkey("RAlt & " key, MakeFKeyFunc(idx))
+idx := i
+       Hotkey("RAlt & " key, MakeFKeyFunc(idx))
 }
 MakeFKeyFunc(idx)
 {
   return (*) => (
-    GetKeyState("Shift", "P")
+      GetKeyState("Shift", "P")
       ? Send("+{F" idx "}")
       : Send("{F" idx "}") )
 }
 
+; --- layer caratteri con RAlt -------------------------------
+
 ; Mappa configurabile per caratteri specali
 global cycleState := Map()
 for key, chars in Map(
+  ; accenti italiani e caratteri speciali
   "a", ["à",],
   "e", ["è","é","€",],
   "i", ["ì",],
   "o", ["ò",],
   "u", ["ù",],
+  "l", ["λ",],
   ; ridondante ma comodo
   "'", ["``",],
   "t", ["~",], ; t per tilde
