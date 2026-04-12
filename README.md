@@ -9,8 +9,9 @@ AutoHotkey v2 script that adds a Vim-style navigation mode and some useful remap
 
 For ergonomics:
 
-* CapsLock mapped to Ctrl
-* Backtick mapped to Esc
+* `CapsLock` mapped to `Ctrl`
+* `Right Alt + CapsLock` mapped to `CapsLock`
+* `Backtick` mapped to `Esc`
 
 ## Modes
 

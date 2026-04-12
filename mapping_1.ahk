@@ -36,8 +36,8 @@ ShowPopup(text)
 
   WinGetPos(, , &w, &h, modeGui.Hwnd)
 
-  x_margin := 10
-  y_margin := 70
+  x_margin := 5
+  y_margin := 65
   x := x_margin
   y := A_ScreenHeight - h - y_margin
 
@@ -120,6 +120,12 @@ BlockKeys()
   ; con Send invece ci evitiamo la whitelist.
   ; Send però richiede di mappare esplicitamente  Ctrl, Shift, etc
 
+  ; nota:
+  ; non si può mappare C-qualcosa su qualcosa non C-
+  ; bug-feature:
+  ;   con Ctrl: manda come impostato
+  ;   con CapsLock: manda Ctrl + come impostato
+
   ; frecce
   h::Send("{Left}")
   j::Send("{Down}")
@@ -133,6 +139,10 @@ BlockKeys()
   ^j::Send("^{Down}")
   ^k::Send("^{Up}")
   ^l::Send("^{Right}")
+  !h::Send("!{Left}")
+  !j::Send("!{Down}")
+  !k::Send("!{Up}")
+  !l::Send("!{Right}")
   ^+h::Send("^+{Left}")
   ^+j::Send("^+{Down}")
   ^+k::Send("^+{Up}")
@@ -142,26 +152,19 @@ BlockKeys()
   #k::Send("#{Up}")
   ; #l::Send("#{Right}") ; conflitto con funzionalità Win
 
-  ; jumps
+  ; words jumps
   w::Send("^{Right}")
   b::Send("^{Left}")
   +w::Send("^+{Right}")
   +b::Send("^+{Left}")
 
-  ; queste 2 non funzionano con CapsLock, solo con Ctrl è corretto così.
-  ; per come è implementata la logica
-  ;
-  ; non si può mappare C-qualcosa su qualcosa non C-
-  ; bug-feature:
-  ;   con Ctrl: manda come impostato
-  ;   con CapsLock: manda Ctrl + come impostato
-  8::Send("{PgUp}")
-  9::Send("{PgDn}")
+  ; pgup, pgdown
+  8::Send("{PgDn}")
+  9::Send("{PgUp}")
+  ^8::Send("^{PgDn}")
+  ^9::Send("^{PgUp}")
 
-  ^8::Send("^{PgUp}")
-  ^9::Send("^{PgDn}")
-
-  ; inizio e fine riga
+  ; home, end
   y::Send("{Home}")
   u::Send("{End}")
   +y::Send("+{Home}")
@@ -171,19 +174,21 @@ BlockKeys()
   ^+y::Send("^+{Home}")
   ^+u::Send("^+{End}")
 
-  0::Send("{Home}")
-  $::Send("{End}")
+  ; 0::Send("{Home}")
+  ; $::Send("{End}")
 
   ; seleziona riga
   +v::Send("{Home}+{End}")
 
   ; x e d come Del
   d::Send("{Del}")
+  +d::Send("+{End}{Del}")
   x::Send("{Del}")
 
   ; Per comodità, questi li facciamo passare anche in Normal
   Enter::Send("{Enter}")
   Backspace::Send("{Backspace}")
+  Del::Send("{Del}")
   Tab::Send("{Tab}") ; utile per muoversi nelle interfacce
 
   ; Solo popup perchè siamo già in Normal
@@ -206,7 +211,19 @@ BlockKeys()
   }
 
   i::SetVimMode(false)
+  +i::
+  {
+    Send("{Home}")
+    SetVimMode(false)
+  }
+
   c::SetVimMode(false)
+  +c::
+  {
+    Send("+{End}") ; no Del perchè rimanendo in select è cmq ok
+    SetVimMode(false)
+  }
+
   a::
   {
     SetVimMode(false)
@@ -223,10 +240,12 @@ BlockKeys()
 ;   ; mapping solo in insert
 ;   ; WARNING: SPERIMENTALE
 ;   ;
+;   ; nota:
 ;   ; non si può mappare C-qualcosa su qualcosa non C-
 ;   ; bug-feature:
 ;   ;   con Ctrl: manda come impostato
 ;   ;   con CapsLock: manda Ctrl + come impostato
+;   ;
 ;   ^h::Send("{Backspace}")
 ;   ^l::Send("{Del}")
 ; #HotIf
@@ -253,10 +272,11 @@ global capsAsCtrl := false
 }
 ^CapsLock Up::
 {
-  ; SetVimMode(!vimMode)
-  ; attiva vimMode
-  if !vimMode
-    SetVimMode(true)
+  ; toggle vimMode
+  SetVimMode(!vimMode)
+  ; attiva vimMode solo se disattivo
+  ; if !vimMode
+  ;   SetVimMode(true)
 }
 
 ; altri mapping -------------------------------
@@ -266,8 +286,16 @@ global capsAsCtrl := false
 ^`::SendText("``")
 +`::SendText("~")
 
-; RAlt per combinazioni particolari Windows
-RAlt & q::Send("!{F4}")
+; Combinazioni particolari Windows con Ctrl-Alt-
+; Nota: meglio non usare il tasto Windows perchè problematico
+;   Chiudi finestra
+^!q::Send("!{F4}")
+;   Aggancio finestra
+;   Necessario questo workaround (win down e win up) perchè il tasto Win è rognoso
+^!h::SendEvent("{LWin down}{Left}{LWin up}")
+^!j::SendEvent("{LWin down}{Down}{LWin up}")
+^!k::SendEvent("{LWin down}{Up}{LWin up}")
+^!l::SendEvent("{LWin down}{Right}{LWin up}")
 
 ; RAlt per CapsLock
 RAlt & CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
@@ -288,6 +316,9 @@ MakeFKeyFunc(idx)
 
 ; --- layer caratteri con RAlt -------------------------------
 
+; RAlt & '::Send("``")
+; RAlt & t::Send("~") ; t per tilde
+
 ; Mappa configurabile per caratteri specali
 global cycleState := Map()
 for key, chars in Map(
@@ -298,7 +329,7 @@ for key, chars in Map(
   "o", ["ò",],
   "u", ["ù",],
   "l", ["λ",],
-  ; ridondante ma comodo
+  ; per tastiere in cui Esc rimpiazza il tasto tilde/backtick
   "'", ["``",],
   "t", ["~",], ; t per tilde
 )
