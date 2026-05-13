@@ -297,21 +297,22 @@ global capsAsCtrl := false
 ^!k::SendEvent("{LWin down}{Up}{LWin up}")
 ^!l::SendEvent("{LWin down}{Right}{LWin up}")
 
-; RAlt per CapsLock
+; CapsLock con RAlt
 RAlt & CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
 
-; RAlt per Function-1, 2, ...
+; RAlt per F1, F2, ...
+; Attenzione: non funziona con altre combinazioni es Alt-F4
 for i, key in ["1","2","3","4","5","6","7","8","9","0","-","="]
 {
-idx := i
-       Hotkey("RAlt & " key, MakeFKeyFunc(idx))
+  idx := i
+  Hotkey("RAlt & " key, MakeFKeyFunc(idx))
 }
 MakeFKeyFunc(idx)
 {
   return (*) => (
-      GetKeyState("Shift", "P")
-      ? Send("+{F" idx "}")
-      : Send("{F" idx "}") )
+    GetKeyState("Shift", "P")
+    ? Send("+{F" idx "}")
+    : Send("{F" idx "}") )
 }
 
 ; --- layer caratteri con RAlt -------------------------------
@@ -351,8 +352,15 @@ CycleKey(key, chars)
   cycleState[key] := idx
   SendText(chars[idx])
 }
-~RAlt Up::
+; ~RAlt Up::
+; {
+;   global cycleState
+;   cycleState.Clear()
+; }
+RAlt::
 {
+  KeyWait("RAlt")
   global cycleState
   cycleState.Clear()
+  return
 }
