@@ -320,47 +320,99 @@ MakeFKeyFunc(idx)
 ; RAlt & '::Send("``")
 ; RAlt & t::Send("~") ; t per tilde
 
+
 ; Mappa configurabile per caratteri specali
 global cycleState := Map()
+global raltWasUsed := false
+
 for key, chars in Map(
-  ; accenti italiani e caratteri speciali
-  "a", ["à",],
-  "e", ["è","é","€",],
-  "i", ["ì",],
-  "o", ["ò",],
-  "u", ["ù",],
-  "l", ["λ",],
+  "a", ["à"],
+  "e", ["è","é","€"],
+  "i", ["ì"],
+  "o", ["ò"],
+  "u", ["ù"],
+  "l", ["λ"],
   ; per tastiere in cui Esc rimpiazza il tasto tilde/backtick
-  "'", ["``",],
-  "t", ["~",], ; t per tilde
+  "'", ["``"],
+  "t", ["~"],
 )
 {
   Hotkey("RAlt & " key, MakeCycleFunc(key, chars))
 }
+
 MakeCycleFunc(key, chars)
 {
   return (*) => CycleKey(key, chars)
 }
+
 CycleKey(key, chars)
 {
-  global cycleState
-  if !cycleState.Has(key)
-    cycleState[key] := 0
-  else
+  global cycleState, raltWasUsed
+
+  raltWasUsed := true
+  SetTimer(WatchRAltRelease, 20)
+
+  if cycleState.Has(key)
     Send("{Backspace}")
+  else
+    cycleState[key] := 0
+
   idx := Mod(cycleState[key], chars.Length) + 1
   cycleState[key] := idx
   SendText(chars[idx])
 }
+
+WatchRAltRelease()
+{
+  global cycleState, raltWasUsed
+
+  if !GetKeyState("RAlt", "P") {
+    cycleState.Clear()
+    raltWasUsed := false
+    SetTimer(WatchRAltRelease, 0)
+  }
+}
+
+RAlt::
+{
+  ; Assorbe RAlt premuto/rilasciato da solo, così non apre il menu.
+  return
+}
+
+; ; Mappa configurabile per caratteri specali
+; global cycleState := Map()
+; for key, chars in Map(
+;   ; accenti italiani e caratteri speciali
+;   "a", ["à",],
+;   "e", ["è","é","€",],
+;   "i", ["ì",],
+;   "o", ["ò",],
+;   "u", ["ù",],
+;   "l", ["λ",],
+;   ; per tastiere in cui Esc rimpiazza il tasto tilde/backtick
+;   "'", ["``",],
+;   "t", ["~",], ; t per tilde
+; )
+; {
+;   Hotkey("RAlt & " key, MakeCycleFunc(key, chars))
+; }
+; MakeCycleFunc(key, chars)
+; {
+;   return (*) => CycleKey(key, chars)
+; }
+; CycleKey(key, chars)
+; {
+;   global cycleState
+;   if !cycleState.Has(key)
+;     cycleState[key] := 0
+;   else
+;     Send("{Backspace}")
+;   idx := Mod(cycleState[key], chars.Length) + 1
+;   cycleState[key] := idx
+;   SendText(chars[idx])
+; }
 ; ~RAlt Up::
 ; {
 ;   global cycleState
 ;   cycleState.Clear()
 ; }
-RAlt::
-{
-  KeyWait("RAlt")
-  global cycleState
-  cycleState.Clear()
-  return
-}
