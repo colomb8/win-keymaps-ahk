@@ -32,7 +32,7 @@ ShowPopup(text)
   }
 
   ; calcolo dimensione
-  modeGui.Show("AutoSize NoActivate")
+  modeGui.Show("AutoSize Hide")
 
   WinGetPos(, , &w, &h, modeGui.Hwnd)
 
@@ -42,6 +42,8 @@ ShowPopup(text)
   y := A_ScreenHeight - h - y_margin
 
   modeGui.Show("x" x " y" y " NoActivate")
+  WinSetAlwaysOnTop true, "ahk_id " modeGui.Hwnd
+  WinMoveTop "ahk_id " modeGui.Hwnd
 }
 
 HidePopup()
@@ -326,11 +328,11 @@ global cycleState := Map()
 global raltWasUsed := false
 
 for key, chars in Map(
-  "a", ["à"],
-  "e", ["è","é","€"],
-  "i", ["ì"],
-  "o", ["ò"],
-  "u", ["ù"],
+  "a", ["à", "À"],
+  "e", ["è", "é", "€", "È", "É"],
+  "i", ["ì", "Ì"],
+  "o", ["ò", "Ò"],
+  "u", ["ù", "Ù"],
   "l", ["λ"],
   ; per tastiere in cui Esc rimpiazza il tasto tilde/backtick
   "'", ["``"],

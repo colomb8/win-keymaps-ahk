@@ -44,11 +44,11 @@ The idea is to use `Right Alt` as the standard key to access additional characte
 
 Examples:
 
-* `Right Alt + a` → `à`
-* `Right Alt + e` → cycles through `è`, `é`, `€`
-* `Right Alt + i` → `ì`
-* `Right Alt + o` → `ò`
-* `Right Alt + u` → `ù`
+* `Right Alt + a` → cycles through `à`, `À`
+* `Right Alt + e` → cycles through `è`, `é`, `€`, `È`, `É`
+* `Right Alt + i` → cycles through `ì`, `Ì`
+* `Right Alt + o` → cycles through `ò`, `Ò`
+* `Right Alt + u` → cycles through `ù`, `Ù`
 
 ## Requirements
 
