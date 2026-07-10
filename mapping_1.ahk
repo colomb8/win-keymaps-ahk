@@ -176,8 +176,8 @@ BlockKeys()
   ^+y::Send("^+{Home}")
   ^+u::Send("^+{End}")
 
-  ; 0::Send("{Home}")
-  ; $::Send("{End}")
+  0::Send("{Home}")
+  $::Send("{End}")
 
   ; seleziona riga
   +v::Send("{Home}+{End}")
@@ -191,7 +191,8 @@ BlockKeys()
   Enter::Send("{Enter}")
   Backspace::Send("{Backspace}")
   Del::Send("{Del}")
-  Tab::Send("{Tab}") ; utile per muoversi nelle interfacce
+  Tab::Send("{Tab}")
+  ; (tab utile per muoversi nelle interfacce oppure indent testo selezionato)
 
   ; Solo popup perchè siamo già in Normal
   ^CapsLock::
