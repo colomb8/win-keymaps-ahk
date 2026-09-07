@@ -332,7 +332,7 @@ for key, chars in Map(
   "a", ["à", "À"],
   "e", ["è", "é", "€", "È", "É"],
   "i", ["ì", "Ì"],
-  "o", ["ò", "Ò"],
+  "o", ["ò", "Ò", "°"],
   "u", ["ù", "Ù"],
   "l", ["λ"],
   ; per tastiere in cui Esc rimpiazza il tasto tilde/backtick
