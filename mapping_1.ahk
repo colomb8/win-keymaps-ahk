@@ -229,6 +229,7 @@ BlockKeys()
 
   a::
   {
+    Send("{Right}")
     SetVimMode(false)
   }
   +a::
@@ -334,6 +335,7 @@ for key, chars in Map(
   "i", ["ì", "Ì"],
   "o", ["ò", "Ò", "°"],
   "u", ["ù", "Ù"],
+  "p", ["£"],
   "l", ["λ"],
   ; per tastiere in cui Esc rimpiazza il tasto tilde/backtick
   "'", ["``"],
