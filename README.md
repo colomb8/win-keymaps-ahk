@@ -1,6 +1,18 @@
 # AHK Vim Mode + CapsLock Mod
 
-AutoHotkey v2 script that adds a Vim-style navigation mode and some useful remappings for 60% keyboards. Designed for Windows environments but easily adaptable to other systems.
+AutoHotkey v2 script that adds a Vim-style navigation mode and some useful remappings for 60% keyboards - MS Windows only.
+
+---
+
+<p align="center">
+  <img
+    src="media/modes_pupup.png"
+    alt="a nice popup"
+    width="250"
+  />
+</p>
+
+---
 
 ## Features
 
@@ -9,16 +21,17 @@ AutoHotkey v2 script that adds a Vim-style navigation mode and some useful remap
 
 For ergonomics:
 
-* `CapsLock` mapped to `Ctrl`
+* `CapsLock` mapped to:
+  - `Ctrl` in combination with other keys
+  - `Esc` if used alone
 * `Right Alt + CapsLock` mapped to `CapsLock`
-* `Backtick` mapped to `Esc`
 
 ## Modes
 
 ### INSERT (default)
 
 * Standard keyboard behavior
-* `Ctrl + CapsLock` activates NORMAL mode (aka vimMode)
+* ``Ctrl + ` `` activates NORMAL mode (aka vimMode)
 
 ### NORMAL
 

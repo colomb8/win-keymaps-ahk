@@ -254,41 +254,60 @@ BlockKeys()
 ;   ^l::Send("{Del}")
 ; #HotIf
 
-; questa logica mappa CapsLock su Ctrl
-; e con C-CapsLock fa toggle su vimMode
-global capsAsCtrl := false
+; Ctrl+Tab -> toggle vimMode
+^`::
+{
+    SetVimMode(!vimMode)
+}
+
+; CapsLock -> Ctrl mentre è premuto
 *CapsLock::
 {
-  global capsAsCtrl
-  if GetKeyState("Ctrl", "P")
-    return
-  capsAsCtrl := true
-  Send("{Blind}{Ctrl down}")
+    Send("{Blind}{Ctrl down}")
 }
+
+; Rilascio CapsLock:
+; - se usato da solo -> Esc
+; - altrimenti -> semplicemente rilascia Ctrl
 *CapsLock Up::
 {
-  global capsAsCtrl
-  if capsAsCtrl
-  {
     Send("{Blind}{Ctrl up}")
-    capsAsCtrl := false
-  }
+
+    if (A_PriorKey = "CapsLock")
+        Send("{Esc}")
 }
-^CapsLock Up::
-{
-  ; toggle vimMode
-  SetVimMode(!vimMode)
-  ; attiva vimMode solo se disattivo
-  ; if !vimMode
-  ;   SetVimMode(true)
-}
+
+; vecchia logica
+; ; questa logica mappa CapsLock su Ctrl
+; ; e con C-CapsLock fa toggle su vimMode
+; global capsAsCtrl := false
+; *CapsLock::
+; {
+;   global capsAsCtrl
+;   if GetKeyState("Ctrl", "P")
+;     return
+;   capsAsCtrl := true
+;   Send("{Blind}{Ctrl down}")
+; }
+; *CapsLock Up::
+; {
+;   global capsAsCtrl
+;   if capsAsCtrl
+;   {
+;     Send("{Blind}{Ctrl up}")
+;     capsAsCtrl := false
+;   }
+; }
+; ^CapsLock Up::
+; {
+;   ; toggle vimMode
+;   SetVimMode(!vimMode)
+;   ; attiva vimMode solo se disattivo
+;   ; if !vimMode
+;   ;   SetVimMode(true)
+; }
 
 ; altri mapping -------------------------------
-
-; backtick per Esc
-`::Esc
-^`::SendText("``")
-+`::SendText("~")
 
 ; Combinazioni particolari Windows con Ctrl-Alt-
 ; Nota: meglio non usare il tasto Windows perchè problematico
