@@ -6,7 +6,7 @@ AutoHotkey v2 script that adds a Vim-style navigation mode and some useful remap
 
 <p align="center">
   <img
-    src="media/modes_pupup.png"
+    src="media/modes_popup.png"
     alt="a nice popup"
     width="250"
   />
